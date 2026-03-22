@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from datetime import date
-import db_helper
+from . import db_helper
 from typing import List
 from pydantic import BaseModel
 
@@ -8,6 +8,8 @@ app = FastAPI()
 
 
 class Expense(BaseModel):
+    id: int
+    expense_date: date
     amount: float
     category: str
     notes: str
@@ -18,7 +20,7 @@ class DateRange(BaseModel):
     end_date: date
 
 
-@app.get("/expenses/{expense_date}", response_model=List[Expense])
+@app.get("/expenses/{expense_date}")
 def get_expenses(expense_date: date):
     expenses = db_helper.fetch_expenses_for_date(expense_date)
     if expenses is None:
